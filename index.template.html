@@ -1,0 +1,164 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SQLForge - Learn SQL by doing</title>
+<style>
+:root{--bg:#f6f4ef;--pn:#fff;--fg:#1d232b;--mu:#667085;--bd:#dcd8cd;--ac:#c26a00;--ac2:#0f766e;--ok:#15803d;--er:#b91c1c;--cd:#f1eee6;--code:#fbf9f4}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e141b;--pn:#151d26;--fg:#e6ebf0;--mu:#8b98a8;--bd:#273241;--ac:#ffb454;--ac2:#2dd4bf;--ok:#4ade80;--er:#f87171;--cd:#1b2530;--code:#0f161e}}
+:root[data-theme=dark]{--bg:#0e141b;--pn:#151d26;--fg:#e6ebf0;--mu:#8b98a8;--bd:#273241;--ac:#ffb454;--ac2:#2dd4bf;--ok:#4ade80;--er:#f87171;--cd:#1b2530;--code:#0f161e}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--fg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0)}
+header{display:flex;gap:.5rem;align-items:center;padding:.5rem .9rem;background:var(--pn);border-bottom:1px solid var(--bd);flex-wrap:wrap}
+h1{font-size:1.15rem;margin:0;font-weight:800;letter-spacing:-.01em}h1 b{color:var(--ac)}.sp{flex:1}
+.pill{font-size:.78rem;color:var(--mu);border:1px solid var(--bd);border-radius:99px;padding:.1rem .6rem}
+button{font:inherit;cursor:pointer;border:1px solid transparent;border-radius:8px;padding:.35rem .8rem;background:var(--ac);color:#1a1200;font-weight:600}
+button.alt{background:transparent;color:var(--fg);border-color:var(--bd);font-weight:500}button.alt:hover{border-color:var(--ac)}
+button.ok{background:var(--ac2);color:#041412}button:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--ac2);outline-offset:2px}
+#app{flex:1;min-height:0;display:grid;grid-template-columns:var(--nav) calc((100% - var(--nav) - 10px)*var(--lp)) 10px 1fr}
+#app.nonav{--nav:0px}#app.noleft{--lp:0}
+#app>*{min-width:0;min-height:0;overflow:auto}
+#nav{background:var(--pn);border-right:1px solid var(--bd);padding:.7rem}#app.nonav #nav{display:none}
+#nav h4{margin:.9rem 0 .2rem;font-size:.85rem;color:var(--mu);font-weight:600}
+.lesson{display:block;width:100%;text-align:left;margin:2px 0;padding:.35rem .6rem;border:0;background:transparent;color:var(--fg);font-weight:500}
+.lesson.cur{background:var(--cd);box-shadow:inset 3px 0 var(--ac);font-weight:700}.lesson.done::after{content:" ✓";color:var(--ok)}
+.bar{height:6px;background:var(--bd);border-radius:4px}.bar i{display:block;height:100%;background:var(--ac2);border-radius:4px;transition:width .4s}
+#left{padding:1.1rem 1.3rem}#app.noleft #left,#app.noleft #split{display:none}
+#split{cursor:col-resize;background:var(--bd);touch-action:none}#split:hover{background:var(--ac)}
+#right{padding:1rem;display:flex;flex-direction:column;gap:.7rem}
+#left h2{margin:.2rem 0 .3rem;font-size:1.6rem;letter-spacing:-.02em;line-height:1.2}#left h3{margin:1.4rem 0 .4rem;font-size:1.05rem}
+.meta{color:var(--mu);font-size:.85rem}#left p,#left li{max-width:68ch}
+code{background:var(--cd);padding:.05rem .35rem;border-radius:5px;font:.9em ui-monospace,Consolas,monospace;color:var(--ac)}
+pre{margin:.4rem 0;padding:.7rem .9rem;background:var(--code);border:1px solid var(--bd);border-left:3px solid var(--ac);border-radius:6px;overflow:auto;font:13px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap}
+.ex{border:1px solid var(--bd);border-radius:10px;padding:.6rem .9rem;margin:.6rem 0;background:var(--pn)}
+.before{border:1px solid var(--ac2);border-radius:10px;padding:.5rem .9rem;margin:.6rem 0;background:var(--cd)}.before summary{cursor:pointer;font-weight:700;color:var(--ac2)}
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin:.5rem 0}.tabs button.on{background:var(--ac);color:#1a1200;border-color:var(--ac)}.tabs button.d::after{content:" ✓"}
+.task{font-size:1.02rem;font-weight:600}
+.tool{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+#edw{position:relative;border:1px solid var(--bd);border-radius:10px;background:var(--code);overflow:hidden}
+textarea{display:block;width:100%;height:190px;min-height:90px;resize:vertical;border:0;padding:.8rem 1rem;font:14px/1.55 ui-monospace,Consolas,monospace;background:transparent;color:var(--fg);tab-size:2}
+#out{flex:1;min-height:80px}.tw{overflow:auto;max-height:46vh;border:1px solid var(--bd);border-radius:8px}
+table{border-collapse:collapse;font-size:.85rem;width:100%}td,th{padding:.25rem .7rem;border-bottom:1px solid var(--bd);white-space:nowrap;text-align:left}th{position:sticky;top:0;background:var(--cd)}td.n{text-align:right;font-variant-numeric:tabular-nums}
+.ok{color:var(--ok)}.er{color:var(--er)}small{color:var(--mu)}
+details.sc{border:1px solid var(--bd);border-radius:10px;padding:.4rem .8rem;background:var(--pn)}details.sc>summary{cursor:pointer;font-weight:700}
+.tb{display:inline-block;vertical-align:top;margin:.4rem .8rem 0 0;font-size:.85rem}.tb ul{margin:.1rem 0;padding-left:1rem}
+@media(max-width:900px){#app,#app.nonav,#app.noleft{display:block;overflow:auto}#app>*{overflow:visible}#split{display:none}#nav{border-right:0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<header><button class="alt" id="tnav" title="Lessons list">☰ Lessons</button><h1>SQL<b>Forge</b></h1><span class="pill">SQLite in your browser</span>
+<div class="bar" style="width:110px"><i id="pb" style="width:0"></i></div><small id="pt"></small><span class="sp"></span>
+<button class="alt" id="tleft" title="Hide or show theory">📖 Theory</button><button class="alt" id="tsc">🗂 Schema</button>
+<button class="alt" id="fm" title="Smaller editor text">A−</button><button class="alt" id="fp" title="Bigger editor text">A+</button>
+<button class="alt" id="theme">🌓</button><button class="alt" id="exp">Export</button>
+<label class="alt" style="cursor:pointer;border:1px solid var(--bd);border-radius:8px;padding:.35rem .8rem">Import<input id="imp" type="file" accept=".json" hidden></label><button class="alt" id="rst">Reset</button></header>
+<div id="app">
+<nav id="nav" aria-label="Lessons"><div id="list"></div></nav>
+<article id="left"><div id="msg">Loading SQL engine…</div><h2 id="lt"></h2><div class="meta" id="meta"></div><div id="theory"></div><div id="exs"></div>
+<h3>Practice</h3><div class="tabs" id="tabs"></div><div id="before"></div><p class="task" id="task"></p><div id="hint"></div></article>
+<div id="split" role="separator" aria-label="Drag to resize panels"></div>
+<section id="right" aria-label="Workspace">
+<div class="tool"><button id="run">▶ Run (Ctrl+Enter)</button><button class="ok" id="chk">✔ Check answer</button><button class="alt" id="h">💡 Hint</button><button class="alt" id="reset">↺ Reset data</button><button class="alt" id="clr">Clear</button></div>
+<div id="edw"><textarea id="ed" spellcheck="false" aria-label="SQL editor" placeholder="Write your SQL here…"></textarea></div>
+<div id="out"><small>Result will appear here. Run your query first, then press Check answer.</small></div>
+<details class="sc" id="schemaBox" open><summary>Tables in this dataset</summary><div id="schema"></div></details>
+</section></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+<script>
+const LESSONS=/*@LESSONS@*/[];
+const DATASETS=/*@DATASETS@*/{};
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const blank=()=>({done:{},ex:{},hints:{},attempts:{},last:null});
+let SQL,db,lessons=[],cur=null,ei=0,hints=0,prog=Object.assign(blank(),store.get('sf.progress',{}));
+const ui=Object.assign({nav:true,left:44,hideLeft:false,schema:true,fs:14},store.get('sf.ui',{}));
+const save=()=>store.set('sf.progress',prog);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const inl=s=>esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
+const md=t=>String(t||'').split('\n\n').map(b=>{const L=b.split('\n');return L.every(l=>l.startsWith('- '))?'<ul>'+L.map(l=>'<li>'+inl(l.slice(2))+'</li>').join('')+'</ul>':'<p>'+inl(b).replace(/\n/g,'<br>')+'</p>'}).join('');
+function layout(){const a=$('app');a.classList.toggle('nonav',!ui.nav);a.classList.toggle('noleft',ui.hideLeft);a.style.setProperty('--nav','240px');a.style.setProperty('--lp',ui.left/100);
+ if(!ui.nav)a.style.setProperty('--nav','0px');$('ed').style.fontSize=ui.fs+'px';$('schemaBox').hidden=!ui.schema;store.set('sf.ui',ui)}
+async function boot(){
+ try{SQL=await initSqlJs({locateFile:f=>'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/'+f})}
+ catch(e){$('msg').innerHTML='<b class="er">SQL engine did not load.</b> Check your internet connection and use a current Chrome, Edge, Firefox or Safari.';return}
+ $('msg').remove();lessons=LESSONS.slice().sort((a,b)=>a.order-b.order);
+ if(!lessons.length){$('lt').textContent='No lessons found. Run build.py again.';return}
+ layout();renderList();openL(lessons.find(l=>l.id===prog.last)||lessons[0]);
+}
+function loadDataset(name){
+ if(!DATASETS[name]){$('schema').innerHTML='<span class="er">Dataset "'+esc(name)+'" is missing. Run: python3 gen_data.py sqlite, then python3 build.py</span>';return}
+ if(db)db.close();db=new SQL.Database();db.exec(DATASETS[name]);renderSchema();
+}
+function renderSchema(){
+ const t=db.exec("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");let h='';
+ (t[0]?t[0].values:[]).forEach(([n])=>{h+='<div class="tb"><b>'+esc(n)+'</b><ul>';
+  db.exec('PRAGMA table_info('+n+')')[0].values.forEach(c=>h+='<li>'+esc(c[1])+' <small>'+esc(c[2])+(c[5]?' · key':'')+'</small></li>');
+  db.exec('PRAGMA foreign_key_list('+n+')').forEach(r=>r.values.forEach(f=>h+='<li><small>links to '+esc(f[2])+'.'+esc(f[4])+'</small></li>'));h+='</ul></div>'});$('schema').innerHTML=h;
+}
+function renderList(){
+ $('list').innerHTML='';let mod='';
+ lessons.forEach(l=>{if(l.module!==mod){mod=l.module;$('list').insertAdjacentHTML('beforeend','<h4>'+esc(mod)+'</h4>')}
+  const b=document.createElement('button');b.className='lesson'+(prog.done[l.id]?' done':'')+(cur&&cur.id===l.id?' cur':'');b.textContent=l.title;b.onclick=()=>openL(l);$('list').appendChild(b)});
+ const n=lessons.filter(l=>prog.done[l.id]).length;$('pb').style.width=(100*n/Math.max(1,lessons.length))+'%';$('pt').textContent=n+'/'+lessons.length+' done';
+}
+function openL(l,i=0){
+ cur=l;prog.last=l.id;save();
+ $('lt').textContent=l.title;$('meta').textContent=l.module+' · '+l.level+' · about '+l.estimatedMinutes+' min';
+ $('theory').innerHTML=md(l.theory);
+ $('exs').innerHTML=(l.examples.length?'<h3>Examples: read first, then run</h3>':'')+l.examples.map((e,k)=>'<div class="ex"><b>'+esc(e.title)+'</b>'+(e.why?md(e.why):'')+'<pre>'+esc(e.sql)+'</pre><button class="alt" data-k="'+k+'">Try in editor</button></div>').join('');
+ $('exs').querySelectorAll('button').forEach(b=>b.onclick=()=>{loadDataset(l.dataset);$('ed').value=l.examples[b.dataset.k].sql;show()});
+ renderList();pick(i);
+}
+function pick(i){
+ ei=i;hints=0;const ex=cur.exercises[i];
+ $('tabs').innerHTML='';cur.exercises.forEach((e,k)=>{const b=document.createElement('button');b.className='alt'+(k===i?' on':'')+(prog.ex[e.id]?' d':'');b.textContent='Exercise '+(k+1)+' ('+e.level+')';b.onclick=()=>pick(k);$('tabs').appendChild(b)});
+ $('before').innerHTML=ex.before?'<details class="before" open><summary>Before you run: what will this query do?</summary>'+md(ex.before)+'</details>':'';
+ $('task').textContent=ex.task;$('hint').innerHTML='';$('ed').value=ex.starter||'';$('out').innerHTML='<small>Result will appear here. Run your query first, then press Check answer.</small>';
+ loadDataset(ex.dataset||cur.dataset);
+}
+function friendly(m){
+ if(/no such column/i.test(m))return 'A column name is wrong or misspelled. Compare it with the tables on the right.';
+ if(/no such table/i.test(m))return 'This table does not exist in the current dataset. Open "Tables in this dataset" below.';
+ if(/syntax error/i.test(m))return 'Syntax problem: check commas, brackets, quotes and keyword spelling.';
+ return 'Read the message below, it points at the problem.'}
+function table(r){return '<div class="tw"><table><tr>'+r.columns.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr>'+r.values.slice(0,200).map(v=>'<tr>'+v.map(x=>x===null?'<td><i>NULL</i></td>':'<td'+(typeof x==='number'?' class="n"':'')+'>'+esc(x)+'</td>').join('')+'</tr>').join('')+'</table></div><small>'+r.values.length+' row(s)'+(r.values.length>200?', first 200 shown':'')+'</small>'}
+function show(){
+ const t0=performance.now();
+ try{const r=db.exec($('ed').value);const ms=(performance.now()-t0).toFixed(1);
+  $('out').innerHTML=(r.length?table(r[r.length-1]):'<p class="ok">Statement executed.</p>')+' <small>· '+ms+' ms</small>';renderSchema()}
+ catch(e){$('out').innerHTML='<p class="er"><b>Query failed.</b> '+friendly(e.message)+'</p><pre>'+esc(e.message)+'</pre>'}
+}
+function lastRes(d,sql){try{const r=d.exec(sql);return{r:r.length?r[r.length-1]:null}}catch(e){return{err:e.message}}}
+function same(a,b,c){
+ if(!a||!b||a.columns.length!==b.columns.length||a.values.length!==b.values.length)return false;
+ const tol=c.floatTolerance||0.001,n=v=>v.map(r=>r.map(x=>typeof x==='number'?Math.round(x/tol):String(x)).join('\u0001'));
+ let x=n(a.values),y=n(b.values);if(!c.ordered){x.sort();y.sort()}return x.join('\n')===y.join('\n')}
+function check(){
+ const ex=cur.exercises[ei],ds=ex.dataset||cur.dataset,st=ex.check&&ex.check.type==='state',a=new SQL.Database(),b=new SQL.Database();a.exec(DATASETS[ds]);b.exec(DATASETS[ds]);let u,s;
+ if(st){u=lastRes(a,$('ed').value);if(!u.err)u=lastRes(a,ex.check.verify);lastRes(b,ex.solution);s=lastRes(b,ex.check.verify)}
+ else{u=lastRes(a,$('ed').value);s=lastRes(b,ex.solution)}
+ a.close();b.close();prog.attempts[ex.id]=(prog.attempts[ex.id]||0)+1;const cp=ex.compare||{};
+ if(!u.err&&same(u.r,s.r,cp)){
+  const diff=u.r.columns.join()!==s.r.columns.join();
+  if(diff&&cp.strictNames){$('out').innerHTML='<p class="er"><b>Almost.</b> Values are right, but this task needs the column name <code>'+esc(s.r.columns.join(', '))+'</code> (you used <code>'+esc(u.r.columns.join(', '))+'</code>).</p>'+table(u.r);save();return}
+  prog.ex[ex.id]=true;if(cur.exercises.every(e=>prog.ex[e.id]))prog.done[cur.id]=true;
+  const nx=ei+1<cur.exercises.length,nl=lessons[lessons.indexOf(cur)+1];
+  $('out').innerHTML='<p class="ok"><b>Correct! ✅</b>'+(diff?' Your column name is <code>'+esc(u.r.columns.join(', '))+'</code> and the expected one is <code>'+esc(s.r.columns.join(', '))+'</code>. The data matches, so it is accepted. Spell aliases carefully.':'')+'</p>'+table(u.r)+'<p>'+(nx?'<button id="nx">Next exercise</button>':nl?'<button id="nx">Next lesson</button>':'🎉 Course complete!')+'</p>';
+  if($('nx'))$('nx').onclick=()=>nx?pick(ei+1):openL(nl);
+  $('hint').innerHTML='<h3>Reference solution</h3><pre>'+esc(ex.solution)+'</pre><ol>'+(ex.explain||[]).map(e=>'<li>'+esc(e)+'</li>').join('')+'</ol>'}
+ else $('out').innerHTML='<p class="er"><b>Not yet.</b> '+(u.err?friendly(u.err):'Compare your rows with the expected ones.')+'</p>'+(u.err?'<pre>'+esc(u.err)+'</pre>':'<b>Yours</b>'+(u.r?table(u.r):'<p>No rows</p>'))+'<b>Expected</b>'+(s.r?table(s.r):'<p>No rows</p>');
+ save();renderList();pick2();
+}
+function pick2(){const ex=cur.exercises;[...$('tabs').children].forEach((b,k)=>b.classList.toggle('d',!!prog.ex[ex[k].id]))}
+$('run').onclick=show;$('chk').onclick=check;$('reset').onclick=()=>{loadDataset(cur.exercises[ei].dataset||cur.dataset);$('out').innerHTML='<small>Dataset reset.</small>'};$('clr').onclick=()=>{$('ed').value='';$('ed').focus()};
+$('ed').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();show()}
+ if(e.key==='Tab'){e.preventDefault();const t=e.target,s=t.selectionStart;t.setRangeText('  ',s,t.selectionEnd,'end')}});
+$('h').onclick=()=>{const ex=cur.exercises[ei];hints++;prog.hints[ex.id]=Math.max(prog.hints[ex.id]||0,hints);save();
+ $('hint').innerHTML=hints===1?'<p>💡 '+esc(ex.hint1)+'</p>':hints===2?'<p>💡 '+esc(ex.hint2)+'</p>':'<h3>Solution</h3><pre>'+esc(ex.solution)+'</pre><ol>'+(ex.explain||[]).map(e=>'<li>'+esc(e)+'</li>').join('')+'</ol>'};
+$('tnav').onclick=()=>{ui.nav=!ui.nav;layout()};$('tleft').onclick=()=>{ui.hideLeft=!ui.hideLeft;layout()};$('tsc').onclick=()=>{ui.schema=!ui.schema;layout()};
+$('fm').onclick=()=>{ui.fs=Math.max(11,ui.fs-1);layout()};$('fp').onclick=()=>{ui.fs=Math.min(26,ui.fs+1);layout()};
+$('split').onpointerdown=e=>{e.preventDefault();const r=$('app').getBoundingClientRect(),nw=ui.nav?240:0;
+ const mv=ev=>{ui.left=Math.min(80,Math.max(20,(ev.clientX-r.left-nw)/(r.width-nw-10)*100));layout()};
+ const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up)};addEventListener('pointermove',mv);addEventListener('pointerup',up)};
+$('theme').onclick=()=>{const t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;store.set('sf.theme',t)};
+if(store.get('sf.theme'))document.documentElement.dataset.theme=store.get('sf.theme');
+$('exp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(prog,null,1)],{type:'application/json'}));a.download='sqlforge-progress.json';a.click()};
+$('imp').onchange=async e=>{try{const p=JSON.parse(await e.target.files[0].text());if(typeof p.done!=='object')throw 0;prog=Object.assign(blank(),p);save();renderList();pick2()}catch(x){alert('This is not a valid progress file.')}};
+$('rst').onclick=()=>{if(confirm('Reset all progress?')){prog=blank();save();renderList();pick(ei)}};
+boot();
+</script></body></html>

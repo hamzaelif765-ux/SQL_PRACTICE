@@ -1,0 +1,29 @@
+{
+ "id":"m01-l02","module":"Module 1 - Basics","title":"Calculated columns and sorting (margin)","order":3,"level":"beginner",
+ "estimatedMinutes":15,"prerequisites":["m01-l01"],"engines":["sqlite"],"dataset":"ecommerce",
+ "theory":"Ab tak tumne table ke columns seedhe select kiye. Par SQL **naye columns bana bhi sakta hai**, jo table me store nahi hote, sirf result me dikhte hain. Isse **calculated column** kehte hain.\n\nExample: `products` table me `price` (bechne ka rate) aur `cost` (kharid rate) hai. **Margin** = `price - cost`. Margin table me nahi hai, hum query me nikalte hain.\n\n**Aliasing:** `AS margin` result column ko naam deta hai. Naam khud choose karo, par spelling dhyan se likho: `margin` aur `margine` do alag naam hain.\n\n**Query kis order me chalti hai (SQLite andar se):**\n- `FROM products`: pehle table uthao\n- `SELECT name, price - cost AS margin`: har row ke liye calculation karo\n- `ORDER BY margin DESC`: bade se chhota sort karo (`DESC` = descending, `ASC` = chhote se bada)\n- `LIMIT 5`: sirf upar ki 5 rows rakho\n\nYaad rakho: `ORDER BY` me alias use kar sakte ho, par `WHERE` me nahi.",
+ "examples":[
+  {"title":"Annual salary jaisa calculation: price ka 10% discount","why":"**Run karne se pehle:** SQL har product ki row padhega, `price * 0.9` nikalega aur use `discounted` naam dega. Sirf pehli 5 rows dikhengi. Table me kuch change nahi hota.","sql":"SELECT name, price, price * 0.9 AS discounted FROM products LIMIT 5;"},
+  {"title":"Sabse mehenge 3 products","why":"**Run karne se pehle:** pehle saari rows `price` ke hisaab se bade se chhote sort hongi, fir upar ke 3 bachenge. Agar `DESC` hata do to sabse sasta pehle aayega.","sql":"SELECT name, price FROM products ORDER BY price DESC LIMIT 3;"}
+ ],
+ "exercises":[
+  {"id":"m01-l02-e1","level":"easy","task":"Sabse zyada margin wale 5 products dikhao: columns name aur margin (price - cost), margin bade se chhota.",
+   "before":"**Plan:**\n- `name` seedha select hoga.\n- `price - cost AS margin` har product ka profit nikalega.\n- `ORDER BY margin DESC` sabse zyada profit upar layega.\n- `LIMIT 5` sirf top 5 rakhega.\n\n**Result me kya aayega:** 2 columns (name, margin) aur 5 rows, margin ghatte order me.",
+   "starter":"SELECT ","hint1":"Calculated column likho: price - cost AS margin.","hint2":"Last me ORDER BY margin DESC LIMIT 5 lagao.",
+   "solution":"SELECT name, price - cost AS margin FROM products ORDER BY margin DESC LIMIT 5;",
+   "explain":["price - cost AS margin: har row ka profit nikala aur naam diya","ORDER BY margin DESC: sabse bada margin pehle","LIMIT 5: sirf top 5 rows"],
+   "compare":{"ordered":true,"columnNames":false,"floatTolerance":0.01}},
+  {"id":"m01-l02-e2","level":"easy","task":"5 sabse sasta products dikhao: name aur price, price chhote se bada.",
+   "before":"**Plan:** is baar sort `ASC` (chhote se bada) hoga. Default order bhi ASC hota hai, par likhna saaf padhne me madad karta hai.",
+   "starter":"SELECT ","hint1":"ORDER BY price ASC use karo.","hint2":"Phir LIMIT 5.",
+   "solution":"SELECT name, price FROM products ORDER BY price ASC LIMIT 5;",
+   "explain":["ORDER BY price ASC: sabse sasta pehle","LIMIT 5: top 5 rows"],
+   "compare":{"ordered":true,"columnNames":false,"floatTolerance":0.01}},
+  {"id":"m01-l02-e3","level":"medium","task":"Margin percentage nikalo: name aur margin_pct = (price - cost) * 100.0 / price, 1 decimal tak ROUND karke. Sabse zyada margin_pct wale 5 products dikhao.",
+   "before":"**Plan:**\n- `(price - cost) * 100.0 / price` profit ko price ka percent banata hai. `100.0` (decimal) isliye likhte hain taaki integer division na ho.\n- `ROUND(x, 1)` result ko 1 decimal par kaat deta hai.\n- Fir sort DESC aur LIMIT 5.",
+   "starter":"SELECT ","hint1":"ROUND((price - cost) * 100.0 / price, 1) AS margin_pct","hint2":"ORDER BY margin_pct DESC LIMIT 5 lagao.",
+   "solution":"SELECT name, ROUND((price - cost) * 100.0 / price, 1) AS margin_pct FROM products ORDER BY margin_pct DESC LIMIT 5;",
+   "explain":["Brackets pehle chalte hain: (price - cost)","100.0 se decimal division hota hai","ROUND(..., 1): 1 decimal","ORDER BY ... DESC LIMIT 5: top 5"],
+   "compare":{"ordered":true,"columnNames":false,"floatTolerance":0.05}}
+ ]
+}
