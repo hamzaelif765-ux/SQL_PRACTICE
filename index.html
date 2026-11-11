@@ -108,7 +108,7 @@ function layout(){const a=$('app');a.classList.toggle('nonav',!ui.nav);a.classLi
  if(!ui.nav)a.style.setProperty('--nav','0px');$('ed').style.fontSize=ui.fs+'px';$('ed').style.height=ui.eh+'px';$('schemaBox').hidden=!ui.schema;store.set('sf.ui',ui)}
 const loadScript=u=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=u;s.onload=ok;s.onerror=()=>no(new Error('Could not load '+u));document.head.appendChild(s)});
 async function boot(){
- layout();const V='1.10.3',srcs=['https://cdnjs.cloudflare.com/ajax/libs/sql.js/'+V+'/','https://cdn.jsdelivr.net/npm/sql.js@'+V+'/dist/'];
+ layout();const V='1.10.3',srcs=['./','https://cdnjs.cloudflare.com/ajax/libs/sql.js/'+V+'/','https://cdn.jsdelivr.net/npm/sql.js@'+V+'/dist/'];
  for(const b of srcs){try{await loadScript(b+'sql-wasm.js');SQL=await initSqlJs({locateFile:f=>b+f});break}catch(e){SQL=null}}
  if(!SQL){$('msg').innerHTML='<b class="er">SQL engine did not load.</b> Internet check karo (WebAssembly chahiye), phir page refresh karo.';return}
  $('msg').remove();lessons=LESSONS.slice().sort((a,b)=>a.id.localeCompare(b.id));
